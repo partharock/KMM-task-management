@@ -1,0 +1,93 @@
+[versions]
+agp = "8.13.2"
+android-compileSdk = "34"
+android-minSdk = "24"
+android-targetSdk = "34"
+androidx-activityCompose = "1.9.0"
+androidx-appcompat = "1.7.0"
+androidx-constraintlayout = "2.1.4"
+androidx-core-ktx = "1.13.1"
+androidx-espresso-core = "3.6.1"
+androidx-material = "1.13.0"
+material-icons-extended = "1.7.8"
+androidx-test-junit = "1.2.1"
+compose-plugin = "1.10.0"
+compose-runtime="1.10.0"
+junit = "4.13.2"
+kotlin = "2.1.0"
+koin = "4.1.1"
+decompose = "3.1.0"
+serialization = "1.7.1"
+coroutines = "1.8.1"
+room = "2.8.4"
+ksp = "2.1.0-1.0.29"
+sqlite = "2.6.2"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-material = { group = "com.google.android.material", name = "material", version.ref = "androidx-material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-plugin" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-runtime" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-runtime" }
+compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose-runtime" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-runtime" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-runtime" }
+compose-components-uiToolingPreview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-runtime" }
+material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
+material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "material-icons-extended" }
+
+
+# Koin
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+
+# Decompose
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-extensions-compose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+
+# Coroutines
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+
+# Serialization
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+# Room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlite" }
+androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "sqlite" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+# For Kotlin 2.0, serialization plugin ID is the same, but version matches kotlin
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+# For Kotlin 2.0, compose compiler is built-in, but the ID for the multiplatform plugin usually handles it.
+# We need to verify if we need org.jetbrains.kotlin.plugin.compose for K2.
+# Actually for KMP with K2, we just use the kotlin plugin and enable the compiler plugin if needed,
+# or for JB Compose, the jetbrainsCompose plugin handles it.
+# Note: For Kotlin 2.0, Use 'org.jetbrains.kotlin.plugin.compose' instead of older ways if using Jetpack Compose, 
+# but for CMP (Compose Multiplatform), the CMP plugin manages compatibility generally. 
+# However, for K2 we should replace `org.jetbrains.compose` compiler configuration with the official K2 compose compiler plugin usually.
+# Let's keep strict deps for now.
+# IMPORTANT: For K2, we need the compose compiler plugin:
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
