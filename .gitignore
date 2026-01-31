@@ -1,0 +1,46 @@
+# Gradle
+.gradle/
+build/
+*/build/
+
+# Local configuration file (sdk.dir, etc.)
+local.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+captures/
+.externalNativeBuild/
+.cxx/
+*.keystore
+google-services.json
+
+# Kotlin Multiplatform
+.kotlin/
+ksp-backup/
+
+# iOS
+*.DS_Store
+DerivedData/
+Pods/
+*.xcworkspace
+xcuserdata/
+fastlane/
+test_output/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+# OS
+.DS_Store
+Thumbs.db
