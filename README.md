@@ -1,80 +1,66 @@
 # KMM Task Management
 
-A cross-platform task management application built with **Kotlin Multiplatform (KMP)**, sharing logic and UI between Android and iOS.
+A cross-platform task management application built with **Kotlin Multiplatform (KMP)**, demonstrating a robust architecture shared between Android and iOS.
 
 ## 🛠 Tech Stack
 
-*   **Language**: Kotlin (100%)
-*   **UI Framework**: [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) (Shared UI)
-*   **Architecture**: Clean Architecture (MVI-style presentation)
-*   **Navigation**: [Decompose](https://arkivanov.github.io/Decompose/)
-*   **Dependency Injection**: [Koin](https://insert-koin.io/)
+*   **Language**: Kotlin (100% Shared Logic & UI)
+*   **UI Framework**: [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
+*   **Architecture**: Clean Architecture (Domain, Data, Presentation)
+*   **Navigation**: [Decompose](https://arkivanov.github.io/Decompose/) (Lifecycle-aware, component-based)
+*   **Dependency Injection**: [Koin](https://insert-koin.io/) (Constructor Injection)
 *   **Persistence**: [Room for KMP](https://developer.android.com/kotlin/multiplatform/room)
-*   **Concurrency**: Kotlin Coroutines & Flow
+*   **Concurrency**: Kotlin Coroutines & Flow (Explicit Threading Management)
 
 ## 💾 Persistence Choice: Room KMP
 
-For this project, **Room** was chosen as the persistence solution over SQLDelight.
+**Room** was chosen over SQLDelight for the following reasons:
+1.  **Familiar API**: Provides a high-level abstraction (DAOs, Entities) that is standard in modern Android development, accelerating cross-platform migration.
+2.  **Reactive Support**: Native support for `Flow` ensures the UI updates automatically whenever data changes in the database.
+3.  **Type Safety**: KSP-based code generation ensures compile-time safety for SQL queries and object mapping.
 
-**Justification:**
-1.  **Familiarity & Adoption**: Room is the standard persistence library for modern Android development. Its KMP version maintains the exact same API (DAOs, Entities, `@Database`), allowing Android developers to transition to KMP without learning a new database query language or toolchain.
-2.  **Abstraction Level**: Room provides a higher-level object-mapping abstraction compared to SQLDelight. It handles the boilerplate of cursor-to-object mapping automatically, which accelerates development for standard CRUD applications.
-3.  **Modern Integration**: It offers first-class support for Kotlin Coroutines and `Flow`, enabling reactive data updates to the UI with minimal configuration.
-4.  **Ecosystem**: Being part of AndroidX, it ensures long-term support and seamless compatibility with other Jetpack libraries.
+## 🏗 Architecture & Design Patterns
 
-## 🏗 Architecture
+### 1. Clean Architecture
+The project is strictly divided into three layers to ensure maintainability and testability:
+*   **Domain**: Contains pure Kotlin entities (`Task`) and repository interfaces.
+*   **Data**: Implements the repository using Room KMP. It handles data mapping and ensures all I/O is performed off-thread.
+*   **Presentation**: Uses **Decompose Components** to manage state and navigation logic. Platform-specific UIs merely render the state provided by these shared components.
 
-The project follows **Clean Architecture** principles, enforcing separation of concerns:
+### 2. Dependency Injection (Koin)
+*   **No Manual DI**: All dependencies, including Repositories and Decompose Components, are registered in Koin modules (`AppModule`, `PlatformModule`).
+*   **Constructor Injection**: Follows senior-level best practices by avoiding the Service Locator pattern inside logic classes, using constructor injection instead.
 
--   **Domain Layer** (`shared/src/commonMain/.../domain`):
-    -   Contains pure business logic and entities.
-    -   Defines Repository interfaces.
-    -   Platform-agnostic (no Android/iOS dependencies).
+### 3. Navigation (Decompose)
+*   Navigation state is managed by the `RootComponent`, which uses a `ChildStack` to handle screen transitions.
+*   Back-button handling and component lifecycles are unified across Android and iOS.
 
--   **Data Layer** (`shared/src/commonMain/.../data`):
-    -   Implements Repository interfaces.
-    -   Manages the Room database and Data Sources.
-    -   Handles data mapping (DTOs <-> Domain Models).
+### 4. Threading Strategy (Strict Requirement)
+*   **Main Thread Protection**: No database or blocking I/O operations are allowed on the main thread.
+*   **Explicit Dispatchers**: All repository methods are wrapped in `withContext(Dispatchers.IO)` (shared) to ensure background execution.
+*   **Reactive Streams**: Database queries return `Flow<List<Task>>` and use `.flowOn(Dispatchers.IO)` to protect downstream observers.
 
--   **Presentation Layer** (`shared/src/commonMain/.../presentation`):
-    -   Uses Decompose Components (`RootComponent`, `TaskListComponent`, `TaskEditComponent`).
-    -   Exposes `StateFlow` or `Value` for the UI to observe.
-    -   Handles navigation logic.
-
--   **UI Layer** (`shared/src/commonMain/.../ui`):
-    -   Pure Compose Multiplatform code.
-    -   Renders the state provided by the Presentation layer.
-    -   100% shared between Android and iOS.
-
-## 🚀 Getting Started
+## 🚀 Running the Project
 
 ### Prerequisites
-*   **JDK 17** or higher.
-*   **Android Studio** (Koala or newer recommended).
-*   **Kotlin Multiplatform Mobile Plugin**.
-*   (Optional) **Xcode** for running the iOS app locally.
+*   **JDK 17**
+*   **Android Studio** (Koala or newer)
+*   **Xcode** & **CocoaPods** (for iOS build)
 
-### Building the Project
+### Android
+1.  Select the `androidApp` run configuration.
+2.  Click **Run**.
 
-1.  **Clone the repository**:
-    ```bash
-    git clone <repo-url>
-    ```
+### iOS
+1.  Build the shared framework: `./gradlew :shared:assembleDebug`
+2.  Install Pods: `cd iosApp && pod install`
+3.  Open `iosApp.xcworkspace` in Xcode.
+4.  Run on an iOS Simulator.
 
-2.  **Open in Android Studio**.
+*Note: The project uses a build directory workaround (`/tmp/kmm_build/`) to avoid KSP issues with spaces in file paths. Ensure Xcode "Framework Search Paths" point to `/tmp/kmm_build/shared/cocoapods/framework` if linking manually.*
 
-3.  **Run Android App**:
-    -   Select the `androidApp` configuration.
-    -   Click the **Run** button (green arrow).
-
-4.  **Run iOS App**:
-    -   Open `iosApp/iosApp.xcodeproj` in Xcode (if available).
-    -   Run on a simulator.
-    -   *Note: Without a Mac, you can verify the iOS build via the provided CI/CD workflow.*
-
-## ✅ Verification
-
-The application includes a thorough verification checklist ensuring:
--   Data persistence works offline.
--   Navigation stack state is preserved.
--   UI renders consistently across platforms.
+## ✅ Verification Features
+*   **Persistence**: Tasks are saved locally and persist across app restarts.
+*   **Sorting**: Tasks retain their insertion order regardless of updates.
+*   **UI Sync**: Strikethrough visual for completed tasks.
+*   **Timestamps**: Displays the exact last-updated time (including seconds) using platform-native date formatters.
