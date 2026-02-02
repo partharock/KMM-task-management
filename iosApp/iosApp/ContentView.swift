@@ -4,7 +4,7 @@ import shared
 struct ContentView: View {
     var body: some View {
         ComposeView()
-            .ignoresSafeArea(.all)
+            // Removed ignoresSafeArea to prevent overlapping with the notch/status bar
     }
 }
 
@@ -16,4 +16,3 @@ struct ComposeView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
-    

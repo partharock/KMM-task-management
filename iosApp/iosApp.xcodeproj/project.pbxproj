@@ -17,10 +17,21 @@
 		FBA723EC5D635B0418A6E731 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		5BC73A472F3040A300A37E34 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5B4290CD2F2FC0B80008D6F2 /* iosApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5B4290D02F2FC0B80008D6F2 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				5BC73A472F3040A300A37E34 /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -71,7 +82,6 @@
 				FBA723EC5D635B0418A6E731 /* Pods-iosApp.debug.xcconfig */,
 				208E0728677C8A4C74572D62 /* Pods-iosApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -308,7 +318,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = /tmp/kmm_build/shared/cocoapods/framework;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -327,7 +339,9 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/cocoapods/framework";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(inherited)";
 			};
 			name = Debug;
 		};
@@ -340,7 +354,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = /tmp/kmm_build/shared/cocoapods/framework;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -359,7 +375,9 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/cocoapods/framework";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(inherited)";
 			};
 			name = Release;
 		};

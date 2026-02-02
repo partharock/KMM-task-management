@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -58,8 +59,18 @@ fun TaskListScreen(component: TaskListComponent) {
                             onCheckedChange = { component.onTaskCompletionToggled(task, it) }
                         )
                         Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
-                            Text(task.title, style = MaterialTheme.typography.h6)
-                            task.description?.let { Text(it, style = MaterialTheme.typography.body2) }
+                            Text(
+                                text = task.title,
+                                style = MaterialTheme.typography.h6,
+                                textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
+                            )
+                            task.description?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.body2,
+                                    textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
+                                )
+                            }
                             Text(
                                 text = "Updated: ${formatTimestamp(task.updatedAt)}",
                                 style = MaterialTheme.typography.caption,
