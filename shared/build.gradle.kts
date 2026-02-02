@@ -18,19 +18,16 @@ kotlin {
         }
     }
     
-    val isMac = System.getProperty("os.name")?.contains("Mac", ignoreCase = true) == true
-    
-    if (isMac) {
-        iosX64()
-        iosArm64()
-        iosSimulatorArm64()
-    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     cocoapods {
         summary = "Shared logic and UI for Task Management"
         homepage = "https://github.com/example/kmm-task-management"
         version = "1.0"
         ios.deploymentTarget = "15.0"
+        name = "shared"
         framework {
             baseName = "shared"
             isStatic = true
@@ -67,18 +64,12 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.material.icons.core)
         }
-        
-        if (isMac) {
-             iosMain.dependencies {
-                // iOS specific dependencies if any
-             }
-        }
     }
 }
 
 android {
     namespace = "com.example.kmmtaskmanagement.shared"
-    compileSdk = 34
+    compileSdk = 35 // Updated to 35 to satisfy dependency requirements
     defaultConfig {
         minSdk = 24
     }
@@ -96,9 +87,8 @@ dependencies {
     add("kspCommonMainMetadata", libs.androidx.room.compiler)
     add("kspAndroid", libs.androidx.room.compiler)
     
-    if (System.getProperty("os.name")?.contains("Mac", ignoreCase = true) == true) {
-         add("kspIosX64", libs.androidx.room.compiler)
-         add("kspIosArm64", libs.androidx.room.compiler)
-         add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-    }
+    // KSP for iOS
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
 }
