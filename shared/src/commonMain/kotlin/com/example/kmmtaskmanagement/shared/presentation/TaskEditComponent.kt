@@ -3,14 +3,14 @@ package com.example.kmmtaskmanagement.shared.presentation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.example.kmmtaskmanagement.shared.domain.Task
 import com.example.kmmtaskmanagement.shared.domain.TaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 interface TaskEditComponent {
     val model: Value<Model>
@@ -23,17 +23,17 @@ interface TaskEditComponent {
     data class Model(
         val title: String = "",
         val description: String = "",
-        val isEditing: Boolean = false // true if editing existing task
+        val isEditing: Boolean = false
     )
 }
 
 class DefaultTaskEditComponent(
     componentContext: ComponentContext,
+    private val repository: TaskRepository,
     private val taskId: String?,
     private val onFinished: () -> Unit
-) : TaskEditComponent, ComponentContext by componentContext, KoinComponent {
+) : TaskEditComponent, ComponentContext by componentContext {
 
-    private val repository: TaskRepository by inject()
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     private val _model = MutableValue(TaskEditComponent.Model(isEditing = taskId != null))
@@ -43,6 +43,8 @@ class DefaultTaskEditComponent(
     private var currentDescription = ""
 
     init {
+        lifecycle.doOnDestroy { scope.cancel() }
+        
         taskId?.let { id ->
             scope.launch {
                 try {
@@ -53,7 +55,7 @@ class DefaultTaskEditComponent(
                         updateModel()
                     }
                 } catch (e: Exception) {
-                    println("Error loading task details: ${e.message}")
+                    // Handle error
                 }
             }
         }
@@ -91,7 +93,7 @@ class DefaultTaskEditComponent(
                 }
                 onFinished()
             } catch (e: Exception) {
-                println("Error saving task: ${e.message}")
+                // Handle error
             }
         }
     }

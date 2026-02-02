@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import com.arkivanov.decompose.defaultComponentContext
 import com.example.kmmtaskmanagement.shared.di.initKoin
 import com.example.kmmtaskmanagement.shared.presentation.DefaultRootComponent
+import com.example.kmmtaskmanagement.shared.presentation.TaskViewModel
 //import com.example.kmmtaskmanagement.shared.presentation.DefaultRootComponent
 import com.example.kmmtaskmanagement.shared.ui.App
 import org.koin.android.ext.koin.androidContext

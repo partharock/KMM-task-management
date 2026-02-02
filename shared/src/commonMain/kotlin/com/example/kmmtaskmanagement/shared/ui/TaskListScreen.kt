@@ -1,24 +1,10 @@
 package com.example.kmmtaskmanagement.shared.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -26,11 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.example.kmmtaskmanagement.shared.domain.Task
 import com.example.kmmtaskmanagement.shared.presentation.TaskListComponent
+import com.example.kmmtaskmanagement.shared.util.formatTimestamp
 
 @Composable
 fun TaskListScreen(component: TaskListComponent) {
@@ -44,57 +31,49 @@ fun TaskListScreen(component: TaskListComponent) {
             }
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-            if (model.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(model.tasks) { task ->
-                        TaskItem(
-                            task = task,
-                            onClicked = { component.onTaskClicked(task) },
-                            onCompletionToggled = { isCompleted -> component.onTaskCompletionToggled(task, isCompleted) },
-                            onDeleted = { component.onTaskDeleted(task) }
+        if (model.isLoading) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(bottom = 80.dp) // Space for FAB
+            ) {
+                items(
+                    items = model.tasks,
+                    key = { it.id } // Added key for better performance and scroll state preservation
+                ) { task ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { component.onTaskClicked(task) }
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = task.isCompleted,
+                            onCheckedChange = { component.onTaskCompletionToggled(task, it) }
                         )
+                        Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
+                            Text(task.title, style = MaterialTheme.typography.h6)
+                            task.description?.let { Text(it, style = MaterialTheme.typography.body2) }
+                            Text(
+                                text = "Updated: ${formatTimestamp(task.updatedAt)}",
+                                style = MaterialTheme.typography.caption,
+                                color = Color.Gray,
+                                fontSize = 10.sp
+                            )
+                        }
+                        IconButton(onClick = { component.onTaskDeleted(task) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
                     }
+                    Divider() // Added divider for better visual separation in long lists
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun TaskItem(
-    task: Task,
-    onClicked: () -> Unit,
-    onCompletionToggled: (Boolean) -> Unit,
-    onDeleted: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClicked)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = task.isCompleted,
-            onCheckedChange = onCompletionToggled
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = task.title,
-                textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null
-            )
-            task.description?.let {
-                if (it.isNotBlank()) {
-                    Text(text = it, style = androidx.compose.material.MaterialTheme.typography.caption)
-                }
-            }
-        }
-        IconButton(onClick = onDeleted) {
-            Icon(Icons.Default.Delete, contentDescription = "Delete")
         }
     }
 }

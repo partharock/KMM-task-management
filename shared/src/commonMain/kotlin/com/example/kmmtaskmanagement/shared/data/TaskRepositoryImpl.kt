@@ -30,7 +30,7 @@ class TaskRepositoryImpl(
     override suspend fun createTask(title: String, description: String?) {
         withContext(ioDispatcher) {
             val task = Task(
-                id = generateUUID(), // We need a UUID generator
+                id = generateUUID(),
                 title = title,
                 description = description,
                 isCompleted = false,
@@ -42,7 +42,8 @@ class TaskRepositoryImpl(
 
     override suspend fun updateTask(task: Task) {
         withContext(ioDispatcher) {
-            taskDao.updateTask(task.toEntity())
+            val updatedTask = task.copy(updatedAt = getCurrentTimeMillis())
+            taskDao.updateTask(updatedTask.toEntity())
         }
     }
 
@@ -50,7 +51,12 @@ class TaskRepositoryImpl(
         withContext(ioDispatcher) {
             val entity = taskDao.getTaskById(taskId)
             entity?.let {
-                taskDao.updateTask(it.copy(isCompleted = isCompleted))
+                taskDao.updateTask(
+                    it.copy(
+                        isCompleted = isCompleted,
+                        updatedAt = getCurrentTimeMillis()
+                    )
+                )
             }
         }
     }
@@ -62,6 +68,5 @@ class TaskRepositoryImpl(
     }
 }
 
-// Utils (normally would be in separate files)
 expect fun generateUUID(): String
 expect fun getCurrentTimeMillis(): Long

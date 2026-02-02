@@ -1,20 +1,8 @@
 package com.example.kmmtaskmanagement.shared.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,24 +30,25 @@ fun TaskEditScreen(component: TaskEditComponent) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize()
                 .padding(16.dp)
+                .fillMaxSize()
         ) {
-            OutlinedTextField(
+            TextField(
                 value = model.title,
                 onValueChange = component::onTitleChanged,
                 label = { Text("Title") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
+            Spacer(Modifier.height(8.dp))
+            TextField(
                 value = model.description,
                 onValueChange = component::onDescriptionChanged,
                 label = { Text("Description") },
                 modifier = Modifier.fillMaxWidth(),
-                minLines = 3
+                minLines = 4
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
             Button(
                 onClick = component::onSaveClicked,
                 modifier = Modifier.fillMaxWidth(),

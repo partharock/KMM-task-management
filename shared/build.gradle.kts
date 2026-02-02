@@ -6,42 +6,45 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    kotlin("native.cocoapods")
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
     
     androidTarget {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
     
-    // Check if we are running on a Mac
     val isMac = System.getProperty("os.name")?.contains("Mac", ignoreCase = true) == true
     
     if (isMac) {
-        listOf(
-            iosX64(),
-            iosArm64(),
-            iosSimulatorArm64()
-        ).forEach { iosTarget ->
-            iosTarget.binaries.framework {
-                baseName = "Shared"
-                isStatic = true
-            }
+        iosX64()
+        iosArm64()
+        iosSimulatorArm64()
+    }
+
+    cocoapods {
+        summary = "Shared logic and UI for Task Management"
+        homepage = "https://github.com/example/kmm-task-management"
+        version = "1.0"
+        ios.deploymentTarget = "15.0"
+        framework {
+            baseName = "shared"
+            isStatic = true
         }
     }
     
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
-            implementation(libs.compose.components.uiToolingPreview)
-            implementation(libs.material.icons.core)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -62,6 +65,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.material.icons.core)
         }
         
         if (isMac) {
@@ -79,22 +83,19 @@ android {
         minSdk = 24
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 room {
-    // Workaround: Project path has spaces, which breaks KSP. Use a temp path without spaces.
-    schemaDirectory("/tmp/kmm_schemas")
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
-    // Room Compiler - KSP
     add("kspCommonMainMetadata", libs.androidx.room.compiler)
     add("kspAndroid", libs.androidx.room.compiler)
     
-    // Only add iOS KSP dependencies if we are on Mac active targets
     if (System.getProperty("os.name")?.contains("Mac", ignoreCase = true) == true) {
          add("kspIosX64", libs.androidx.room.compiler)
          add("kspIosArm64", libs.androidx.room.compiler)

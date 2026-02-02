@@ -5,12 +5,16 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.example.kmmtaskmanagement.shared.presentation.DefaultRootComponent
 import com.example.kmmtaskmanagement.shared.presentation.RootComponent
+import platform.UIKit.UIViewController
 
-fun MainViewController(root: RootComponent) = ComposeUIViewController {
+fun MainViewController(root: RootComponent): UIViewController = ComposeUIViewController {
     App(root)
 }
 
-// In a real iOS KMP app using Decompose, we need to handle the Lifecycle manually 
-// passing it from the Swift side or creating a RootComponentProvider.
-// This is a simplified helper if Swift handles the context creation, 
-// OR we can expose a helper to create the root component.
+object RootComponentFactory {
+    fun create(): RootComponent {
+        return DefaultRootComponent(
+            componentContext = DefaultComponentContext(LifecycleRegistry())
+        )
+    }
+}
